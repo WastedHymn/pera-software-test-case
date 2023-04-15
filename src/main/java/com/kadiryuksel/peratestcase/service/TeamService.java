@@ -60,4 +60,8 @@ public class TeamService {
     public String getTeamNameByTeamId(long teamId) {
         return teamRepository.findTeamById(teamId).getTeamName();
     }
+
+    public Team getTeamById(long teamId){
+        return teamRepository.findTeamById(teamId);
+    }
 }
