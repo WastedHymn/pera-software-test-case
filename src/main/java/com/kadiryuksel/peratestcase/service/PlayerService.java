@@ -4,6 +4,7 @@ import com.kadiryuksel.peratestcase.dto.FootballPlayerRegistrationDto;
 import com.kadiryuksel.peratestcase.entity.Player;
 import com.kadiryuksel.peratestcase.entity.Team;
 import com.kadiryuksel.peratestcase.enums.Nationality;
+import com.kadiryuksel.peratestcase.enums.PlayerType;
 import com.kadiryuksel.peratestcase.repository.PlayerRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,6 +20,14 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
+    public static final int MAX_GOALKEEPER_COUNT = 2;
+    public static final int MAX_FOREIGN_COUNT = 6;
+    public static final int MAX_PLAYER_COUNT = 18;
+
+    public boolean doesPlayerExistsByFirstNameAndLastName(String firstName, String lastName) {
+        return playerRepository.existsByFirstNameAndLastName(firstName, lastName);
+    }
+
     public List<Player> getPlayersByTeamId(long teamId) {
         return playerRepository.getPlayersByTeamId(teamId);
     }
@@ -27,12 +36,16 @@ public class PlayerService {
         return playerRepository.getPlayerByFirstNameAndLastName(firstName, lastName);
     }
 
-    public boolean doesPlayerExistsByFirstNameAndLastName(String firstName, String lastName) {
-        return playerRepository.existsByFirstNameAndLastName(firstName, lastName);
-    }
-
     public int getForeignPlayerCountByTeamId(long teamId) {
         return playerRepository.countByNationalityAndTeamId(Nationality.FOREIGN, teamId);
+    }
+
+    public int getGoalkeeperCountByTeamId(long teamId) {
+        return playerRepository.countByPlayerTypeAndTeamId(PlayerType.GOALKEEPER, teamId);
+    }
+
+    public int getPlayerCountByTeamId(long teamId){
+        return playerRepository.countByTeamId(teamId);
     }
 
     @Transactional
@@ -47,7 +60,7 @@ public class PlayerService {
         Player savedPlayer = playerRepository.save(newPlayer);
         String playerName = savedPlayer.getFirstName() + " " + savedPlayer.getLastName();
         logger.info(String.format("New football player added to the player table -> %s", savedPlayer));
-        return String.format("%s added to the player database.", playerName);
+        return String.format("%s added to the team %s.", playerName, savedPlayer.getTeam().getTeamName());
     }
 
     @Transactional
