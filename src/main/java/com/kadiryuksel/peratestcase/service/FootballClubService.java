@@ -1,6 +1,7 @@
 package com.kadiryuksel.peratestcase.service;
 
 import com.kadiryuksel.peratestcase.dto.FootballPlayerRegistrationDto;
+import com.kadiryuksel.peratestcase.dto.TeamNameUpdateDto;
 import com.kadiryuksel.peratestcase.entity.Player;
 import com.kadiryuksel.peratestcase.entity.Team;
 import com.kadiryuksel.peratestcase.enums.Nationality;
@@ -8,7 +9,7 @@ import com.kadiryuksel.peratestcase.enums.PlayerType;
 import com.kadiryuksel.peratestcase.exception.PlayerAlreadyExistsException;
 import com.kadiryuksel.peratestcase.exception.PlayerLimitException;
 import com.kadiryuksel.peratestcase.exception.TeamAlreadyExistsException;
-import com.kadiryuksel.peratestcase.exception.TeamNotFoundException;
+import com.kadiryuksel.peratestcase.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,21 +28,20 @@ public class FootballClubService {
         boolean teamExist = teamService.doesTeamExistByTeamName(teamName);
         if (teamExist)
             throw new TeamAlreadyExistsException(teamName);
-        return teamService.AddTeam(teamName);
+        return teamService.addTeam(teamName);
     }
 
     public String addNewFootballPlayer(FootballPlayerRegistrationDto playerDto) {
         boolean doesTeamExist = teamService.doesTeamExistByTeamName(playerDto.getTeamName());
         //Check if the team does not exist
         if (!doesTeamExist) {
-            logger.warn(
-                    String.format("Team %s does not exist.", playerDto.getTeamName())
-            );
-            throw new TeamNotFoundException(playerDto.getTeamName());
+            String message = String.format("Team %s does not exist.", playerDto.getTeamName());
+            logger.warn(message);
+            throw new NotFoundException(message);
         }
         Team team = teamService.getTeamByTeamName(playerDto.getTeamName());
 
-        boolean doesPlayerExist = playerService.doesPlayerExistsByFirstNameAndLastName(
+        boolean doesPlayerExist = playerService.doesPlayerExistByFirstNameAndLastName(
                 playerDto.getFirstName(), playerDto.getLastName());
         //Check if the player exists
         if (doesPlayerExist) {
@@ -95,11 +95,34 @@ public class FootballClubService {
 
     public String deleteTeamById(long teamId) {
         boolean teamExists = teamService.doesTeamExistByTeamId(teamId);
-        if (!teamExists)
-            throw new TeamNotFoundException(teamId);
+        if (!teamExists){
+            String message = String.format("Team ID: %d does not exists.", teamId);
+            throw new NotFoundException(message);
+        }
+
         String teamName = teamService.getTeamNameByTeamId(teamId);
         playerService.deleteTeamPlayersByTeamId(teamId);
         teamService.deleteTeamById(teamId);
         return String.format("Team %s deleted from database.", teamName);
+    }
+
+    public String deletePlayerById(long playerId) {
+        boolean playerExists = playerService.doesPlayerExistById(playerId);
+        if (!playerExists){
+            String message = String.format("Player ID: %d not found.", playerId);
+            throw new NotFoundException(message);
+        }
+        Player player = playerService.getPlayerById(playerId);
+        playerService.deletePlayerById(playerId);
+        return String.format("Player %s %s deleted from team %s.", player.getFirstName(), player.getLastName(), player.getTeam().getTeamName());
+    }
+
+    public String changeTeamName(TeamNameUpdateDto updateDto){
+        boolean teamExists = teamService.doesTeamExistByTeamId(updateDto.getTeamId());
+        if(!teamExists){
+            String message = String.format("Team ID: %d does not exists.", updateDto.getTeamId());
+            throw new NotFoundException(message);
+        }
+        return teamService.updateTeamName(updateDto.getTeamId(), updateDto.getNewTeamName());
     }
 }
