@@ -1,6 +1,7 @@
 package com.kadiryuksel.peratestcase.service;
 
 import com.kadiryuksel.peratestcase.dto.FootballPlayerRegistrationDto;
+import com.kadiryuksel.peratestcase.dto.FootballPlayerTeamUpdateDto;
 import com.kadiryuksel.peratestcase.dto.TeamNameUpdateDto;
 import com.kadiryuksel.peratestcase.entity.Player;
 import com.kadiryuksel.peratestcase.entity.Team;
@@ -65,7 +66,7 @@ public class FootballClubService {
             if (goalkeeperCount >= PlayerService.MAX_GOALKEEPER_COUNT) {
                 String message = String.format("Team %s already has %d goalkeeper in the team.", team.getTeamName(), PlayerService.MAX_GOALKEEPER_COUNT);
                 logger.warn(message);
-                throw new PlayerLimitException(message);//GoalkeeperLimitException(message);
+                throw new PlayerLimitException(message);
             }
         }
 
@@ -124,5 +125,20 @@ public class FootballClubService {
             throw new NotFoundException(message);
         }
         return teamService.updateTeamName(updateDto.getTeamId(), updateDto.getNewTeamName());
+    }
+
+    public String changePlayerTeam(FootballPlayerTeamUpdateDto teamUpdateDto){
+        boolean teamExists = teamService.doesTeamExistByTeamId(teamUpdateDto.getNewTeamId());
+        if (!teamExists){
+            String message = String.format("Team ID: %d does not exists.", teamUpdateDto.getNewTeamId());
+            throw new NotFoundException(message);
+        }
+        boolean playerExists = playerService.doesPlayerExistById(teamUpdateDto.getPlayerId());
+        if (!playerExists){
+            String message = String.format("Player ID: %d not found.", teamUpdateDto.getPlayerId());
+            throw new NotFoundException(message);
+        }
+        Team team = teamService.getTeamById(teamUpdateDto.getNewTeamId());
+        return playerService.updatePlayerTeam(teamUpdateDto.getPlayerId(), team);
     }
 }
