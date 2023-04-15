@@ -1,8 +1,6 @@
 package com.kadiryuksel.peratestcase.advice;
 
-import com.kadiryuksel.peratestcase.exception.PlayerAlreadyExistsException;
-import com.kadiryuksel.peratestcase.exception.TeamAlreadyExistsException;
-import com.kadiryuksel.peratestcase.exception.TeamNotFoundException;
+import com.kadiryuksel.peratestcase.exception.*;
 import com.kadiryuksel.peratestcase.response.AlreadyExistsExceptionResponse;
 import com.kadiryuksel.peratestcase.response.BadRequestResponse;
 import com.kadiryuksel.peratestcase.response.NotFoundExceptionResponse;
@@ -35,8 +33,7 @@ public class ErrorHandlingAdvice {
 
     @ExceptionHandler(TeamAlreadyExistsException.class)
     public ResponseEntity<AlreadyExistsExceptionResponse> handleTeamAlreadyExistsException(TeamAlreadyExistsException exception){
-        String message = exception.getMessage();
-        AlreadyExistsExceptionResponse response = new AlreadyExistsExceptionResponse(message);
+        AlreadyExistsExceptionResponse response = new AlreadyExistsExceptionResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
@@ -49,15 +46,27 @@ public class ErrorHandlingAdvice {
 
     @ExceptionHandler(PlayerAlreadyExistsException.class)
     public ResponseEntity<AlreadyExistsExceptionResponse> handlePlayerAlreadyExistsException(PlayerAlreadyExistsException exception){
-        String message = exception.getMessage();
-        AlreadyExistsExceptionResponse response = new AlreadyExistsExceptionResponse(message);
+        AlreadyExistsExceptionResponse response = new AlreadyExistsExceptionResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(TeamNotFoundException.class)
     public ResponseEntity<NotFoundExceptionResponse> handleTeamNotFoundException(TeamNotFoundException exception){
-        String message = exception.getMessage();
-        NotFoundExceptionResponse response = new NotFoundExceptionResponse(message);
+        NotFoundExceptionResponse response = new NotFoundExceptionResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    /*
+    @ExceptionHandler(GoalkeeperLimitException.class)
+    public ResponseEntity<AlreadyExistsExceptionResponse> handleGoalkeeperLimitException(GoalkeeperLimitException exception){
+        AlreadyExistsExceptionResponse response = new AlreadyExistsExceptionResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+    */
+
+    @ExceptionHandler(PlayerLimitException.class)
+    public ResponseEntity<AlreadyExistsExceptionResponse> handlePlayerLimitException(PlayerLimitException exception){
+        AlreadyExistsExceptionResponse response = new AlreadyExistsExceptionResponse(exception.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 }
