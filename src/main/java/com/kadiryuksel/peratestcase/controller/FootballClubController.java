@@ -1,6 +1,7 @@
 package com.kadiryuksel.peratestcase.controller;
 
 import com.kadiryuksel.peratestcase.dto.FootballPlayerRegistrationDto;
+import com.kadiryuksel.peratestcase.dto.TeamNameUpdateDto;
 import com.kadiryuksel.peratestcase.dto.TeamRegistrationDto;
 import com.kadiryuksel.peratestcase.entity.Player;
 import com.kadiryuksel.peratestcase.entity.Team;
@@ -35,6 +36,12 @@ public class FootballClubController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
+    @PostMapping("/updateTeamNameById")
+    public ResponseEntity<String> updateTeamNameById(@RequestBody @Valid TeamNameUpdateDto teamNameUpdateDto){
+        String message = footballClubService.changeTeamName(teamNameUpdateDto);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
     @GetMapping("/getAllFootballTeams")
     public ResponseEntity<List<Team>> getAllFootballTeams() {
         List<Team> teams = footballClubService.getAllFootballTeams();
@@ -44,21 +51,31 @@ public class FootballClubController {
     @GetMapping("/getTeamPlayers/team/{id}")
     public ResponseEntity<List<Player>> getTeamPlayersById(
             @PathVariable("id")
-            @PositiveOrZero(message = "Id must be zero or higher value.") long id) {
-        List<Player> players = footballClubService.getTeamPlayersByTeamId(id);
+            @PositiveOrZero(message = "Team ID cannot be negative value.") long teamId) {
+        List<Player> players = footballClubService.getTeamPlayersByTeamId(teamId);
         return new ResponseEntity<>(players, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteTeam/{id}")
     public ResponseEntity<String> deleteTeamById(
             @PathVariable("id")
-            @PositiveOrZero(message = "Id must be zero or higher value.") long teamId) {
+            @PositiveOrZero(message = "Team ID cannot be negative value.") long teamId) {
         String message = footballClubService.deleteTeamById(teamId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
+    @DeleteMapping("/deletePlayer/{id}")
+    public ResponseEntity<String> deletePlayerById(
+            @PathVariable("id")
+            @PositiveOrZero(message = "Player ID cannot be negative value.") long playerId) {
+        String message = footballClubService.deletePlayerById(playerId);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    /*
     @GetMapping("/getForeignPlayerCount/club/{id}")
     public int foreignPlayerCount(@PathVariable("id") long teamId) {
         return footballClubService.getForeignPlayerCount(teamId);
     }
+    */
 }
