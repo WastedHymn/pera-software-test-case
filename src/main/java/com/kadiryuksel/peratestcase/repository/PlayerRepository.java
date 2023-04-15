@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
 
+    Player getPlayerById(long playerId);
+
     List<Player> getPlayersByTeamId(long teamId);
 
     int countByNationalityAndTeamId(Nationality nationality, long teamId);
