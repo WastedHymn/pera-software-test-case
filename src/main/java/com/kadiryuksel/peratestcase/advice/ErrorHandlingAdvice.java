@@ -50,8 +50,8 @@ public class ErrorHandlingAdvice {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(TeamNotFoundException.class)
-    public ResponseEntity<NotFoundExceptionResponse> handleTeamNotFoundException(TeamNotFoundException exception){
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<NotFoundExceptionResponse> handleTeamNotFoundException(NotFoundException exception){
         NotFoundExceptionResponse response = new NotFoundExceptionResponse(exception.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
