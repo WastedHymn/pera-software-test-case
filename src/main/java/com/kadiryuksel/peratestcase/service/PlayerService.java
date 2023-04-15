@@ -32,7 +32,7 @@ public class PlayerService {
         return playerRepository.existsById(playerId);
     }
 
-    public Player getPlayerById(long playerId){
+    public Player getPlayerById(long playerId) {
         return playerRepository.getPlayerById(playerId);
     }
 
@@ -69,6 +69,19 @@ public class PlayerService {
         String playerName = savedPlayer.getFirstName() + " " + savedPlayer.getLastName();
         logger.info(String.format("New football player added to the player table -> %s", savedPlayer));
         return String.format("%s added to the team %s.", playerName, savedPlayer.getTeam().getTeamName());
+    }
+
+    @Transactional
+    public String updatePlayerTeam(long playerId, Team newTeam) {
+        Player player = playerRepository.getPlayerById(playerId);
+        String oldTeamStr = player.getTeam().getTeamName();
+        player.setTeam(newTeam);
+        Player updatedPlayer = playerRepository.save(player);
+        String newTeamStr = updatedPlayer.getTeam().getTeamName();
+        String playerName = String.format("%s %s", player.getFirstName(), player.getLastName());
+        String message = String.format("%s 's team changed from %s to %s.", playerName, oldTeamStr, newTeamStr);
+        logger.info(message);
+        return message;
     }
 
     @Transactional
