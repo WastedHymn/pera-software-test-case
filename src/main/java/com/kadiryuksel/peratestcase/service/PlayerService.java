@@ -24,8 +24,16 @@ public class PlayerService {
     public static final int MAX_FOREIGN_COUNT = 6;
     public static final int MAX_PLAYER_COUNT = 18;
 
-    public boolean doesPlayerExistsByFirstNameAndLastName(String firstName, String lastName) {
+    public boolean doesPlayerExistByFirstNameAndLastName(String firstName, String lastName) {
         return playerRepository.existsByFirstNameAndLastName(firstName, lastName);
+    }
+
+    public boolean doesPlayerExistById(long playerId) {
+        return playerRepository.existsById(playerId);
+    }
+
+    public Player getPlayerById(long playerId){
+        return playerRepository.getPlayerById(playerId);
     }
 
     public List<Player> getPlayersByTeamId(long teamId) {
@@ -44,7 +52,7 @@ public class PlayerService {
         return playerRepository.countByPlayerTypeAndTeamId(PlayerType.GOALKEEPER, teamId);
     }
 
-    public int getPlayerCountByTeamId(long teamId){
+    public int getPlayerCountByTeamId(long teamId) {
         return playerRepository.countByTeamId(teamId);
     }
 
@@ -66,5 +74,10 @@ public class PlayerService {
     @Transactional
     public void deleteTeamPlayersByTeamId(long teamId) {
         playerRepository.deleteAllByTeamId(teamId);
+    }
+
+    @Transactional
+    public void deletePlayerById(long playerId) {
+        playerRepository.deleteById(playerId);
     }
 }
