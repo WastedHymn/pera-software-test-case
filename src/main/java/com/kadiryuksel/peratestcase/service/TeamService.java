@@ -17,12 +17,22 @@ public class TeamService {
     private final static Logger logger = LoggerFactory.getLogger(TeamService.class);
 
     @Transactional
-    public String AddTeam(String teamName) {
+    public String addTeam(String teamName) {
         Team newTeam = Team.builder().teamName(teamName).build();
         Team savedTeam = teamRepository.save(newTeam);
         String infoMessage = String.format("Team added to the team table: %d %s", savedTeam.getId(), savedTeam.getTeamName());
         logger.info(infoMessage);
         return infoMessage;
+    }
+
+    @Transactional String updateTeamName(long teamId,String newName){
+        Team team = teamRepository.findTeamById(teamId);
+        String oldTeamName = team.getTeamName();
+        team.setTeamName(newName);
+        Team updatedTeam = teamRepository.save(team);
+        String message = String.format("Team %s name updated to %s.", oldTeamName, updatedTeam.getTeamName());
+        logger.info(message);
+        return message;
     }
 
     public List<Team> getAllTeams() {
@@ -44,6 +54,7 @@ public class TeamService {
     @Transactional
     public void deleteTeamById(long teamId) {
         teamRepository.deleteById(teamId);
+        logger.warn(String.format("Team deleted from database(ID: %d).", teamId));
     }
 
     public String getTeamNameByTeamId(long teamId) {
