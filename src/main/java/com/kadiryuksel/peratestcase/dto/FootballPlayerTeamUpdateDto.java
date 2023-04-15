@@ -1,6 +1,6 @@
 package com.kadiryuksel.peratestcase.dto;
 
-import com.kadiryuksel.peratestcase.ConstantMessages;
+import com.kadiryuksel.peratestcase.util.ConstantMessages;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.kadiryuksel.peratestcase.controller;
 
-import com.kadiryuksel.peratestcase.ConstantMessages;
+import com.kadiryuksel.peratestcase.util.ConstantMessages;
 import com.kadiryuksel.peratestcase.dto.FootballPlayerRegistrationDto;
 import com.kadiryuksel.peratestcase.dto.FootballPlayerTeamUpdateDto;
 import com.kadiryuksel.peratestcase.dto.TeamNameUpdateDto;
