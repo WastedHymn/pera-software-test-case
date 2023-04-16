@@ -29,6 +29,7 @@ public class FootballClubService {
         boolean teamExists = teamService.doesTeamExistByTeamId(teamId);
         if (!teamExists) {
             String message = String.format("Team ID: %d does not exists.", teamId);
+            logger.warn(message);
             throw new NotFoundException(message);
         }
     }
@@ -37,6 +38,7 @@ public class FootballClubService {
         boolean playerExists = playerService.doesPlayerExistById(playerId);
         if (!playerExists) {
             String message = String.format("Player ID: %d not found.", playerId);
+            logger.warn(message);
             throw new NotFoundException(message);
         }
     }
